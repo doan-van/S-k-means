@@ -438,303 +438,273 @@ def Plot_SS(df, ofile='fig.png', colrs = [], ax=None  ):
 if __name__ == "__main__":
     print("Hello")
     
-    #plt.style.use('ggplot')
-    
-    odir = 'fig/kmeans2/'
-    os.system('rm -r '+odir)
-    if not os.path.exists(odir): os.makedirs(odir)
+    odir0 = 'demo/'
     
     
-    a1, a2, a3 = 150, 300, 150
-    #a1, a2, a3 = 15, 30, 15    
-    x = np.random.normal( (-.5,-.5), .2, (a1,2) )
-    x = np.append(x, np.random.normal((-.25,1), .2, (a2,2) ), axis=0)
-    x = np.append(x, np.random.normal((.5,.5), .2, (a3,2) ), axis=0)
-
-    if 0:
-        x = np.random.normal( (.5,.5), .2, (300,2) )
-        x = np.append(x, np.random.normal((1,1), .15, (200,2) ), axis=0)
-        x = normalize1(x)
-        dx = pd.DataFrame(x)
-        dx.to_csv('data_test.csv')
-
-    dx = pd.read_csv('data_test.csv', index_col=0)
-    x =  dx.values   
-    
+        
     sis = []
     sim = 'ed'
     color = {'ed': 'k'}
     label = {'ed': 'ED'}
-    ss = - selsim(x, sim)
+    k = 4
     
+    nu_runs = 10
     
-    if 1:
-        
-        #x = np.random.normal( (-.5,-.5), .2, (300,2) )
-        #ss = - selsim(x, sim)
-        xn = normalize1(-ss)
-        x1 = xn[np.triu_indices(xn.shape[0],k=1)]
-        import seaborn as sns
-        
-        
-        if 0:
-            
-                
-            fig = plt.figure(figsize=(4,4))
-            ax = plt.axes([.1,.1,.8,.8])
-                
-            ax.scatter(x[:, 0], x[:, 1], s=15, c='gray', alpha = .8)
-            #plt.scatter(C[:,0],C[:,1],marker='*',color='r',s=300,alpha=0.9) 
-            #plt.axis('off')
-            #ax.get_xaxis().set_ticks([])
-            #ax.get_yaxis().set_ticks([])
-            #ax.xaxis.set_ticklabels([])
-            #ax.yaxis.set_ticklabels([])
-            #plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-            #plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
-            #plt.rcParams['ytick.left'] = plt.rcParams['ytick.labelleft'] = False
-            #plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = False
-            #plt.show()
-            #plt.grid(b=None)
-            #fig.savefig(odir+'%.2d'%(i+1)+'.png',dpi=150)   
-            ax.set_ylim(-.1,1.1)
-            ax.set_xlim(-.1,1.1)
-            ax.set_xlabel('X')
-            ax.set_ylabel('Y')
-            #plt.yticks([],[])
-            #plt.xticks([],[])
-        
-        
-        if 0:
-            print('plot D-diagram')
-            def normalize1(x): return ( x - x.min() ) / ( x.max() - x.min())
-            
-            fig = plt.figure(figsize=[2.5,2.5])    
-            
-            ax = plt.axes([.1,.1, .8,.8])  
-            
-            
-            
-            sns.distplot(x1, hist=False, kde=True, ax=ax,norm_hist=False,
-                 bins=np.arange(0.,1.001,0.02), color = 'r',
-                 hist_kws={'edgecolor':'none', 'alpha':.2},
-                 kde_kws={'linewidth': 1.5, 'alpha':.8}, label=label[sim])
-            
-            sns.distplot(x1, hist=True, kde=True, ax=ax,norm_hist=False,
-                 bins=np.arange(0.,1.001,0.015), color = color[sim],
-                 hist_kws={'edgecolor':'none', 'alpha':.2},
-                 kde_kws={'linewidth': 0, 'alpha':.8}, label='')
+    for ir in range(nu_runs)[:0]:
     
-            
-            #plt.legend(loc=2, frameon=False)
-            ax.set_ylabel('PDF')
-            ax.set_xlabel('Normalized similarity')
-            ax.spines['right'].set_color('none')
-            ax.spines['top'].set_color('none')
-            ax.xaxis.set_ticks_position('bottom')
-            ax.spines['bottom'].set_position(('axes', -0.0))
-            ax.yaxis.set_ticks_position('left')
-            ax.spines['left'].set_position(('axes', -0.0))
-            ax.set_xlim([0, 1.01])
-            #ax.set_ylim([-0.0, 7])
-            ax.xaxis.grid(False)
-            ax.yaxis.grid(False)
-            ax.ticklabel_format(style='plain')
-            #ax.ticklabel_format(useOffset=False)
-            ax.ticklabel_format(axis='y', style='sci', scilimits=(-4,4))
-            #text =  string.ascii_lowercase[ik] 
-            #ax.text(0.,1.01,text,fontsize=18, fontweight = 'bold', transform = ax.transAxes)
-            #ax.text(.5,1.01,key,fontsize=13, ha='center', transform = ax.transAxes)
-            #plt.grid(True)
-            #fig.tight_layout()
-            plt.xticks([0,.5,1])
-            plt.yticks([],[])
-            #np.arange(0,101,20),['%.1f'%l for l in np.arange(0,1.01,.2)])        
-                
-                
-            # was: axes.spines['bottom'].set_position(('data',1.1*X.min()))
-            #ax.spines['bottom'].set_position(('axes', -0.05))
-            #ax.yaxis.set_ticks_position('left')
-            #ax.spines['left'].set_position(('axes', -0.05))
-            
+        odir  = odir0 + '/run_'+str(ir) + '/'
+        if not os.path.exists(odir): os.makedirs(odir)
         
         
-        
-        # plot matrix
-        if 0:
-            fig = plt.figure(figsize=[5,4])
-                            
-            #odir = 'fig_stat/' 
-            mask = np.zeros_like(xn)
-            mask[np.triu_indices_from(mask)] = True
-                
-                        
-                     
-            ax = plt.axes([.1,.1, .8,.8])   
-                
-            #'''
-            ax = sns.heatmap(pd.DataFrame(xn[:100,:100]),
-                             #annot=True, 
-                             #mask = mask,
-                             #cmap="YlGnBu",
-                             vmin = 0.,
-                             vmax=1.,
-                             cbar_kws={'label': 'Similarity', "shrink": .75},
-                             #annot_kws={'size': 6},
-                             #fmt=".1f", center=.1, 
-                             #cbar = cbar, 
-                             #linewidths=.25, 
-                             #linecolor='gray'
-                             )       
-            #'''
-            
-            
-            ax.axhline(y=0, color='gray',linewidth=.25)
-            plt.xticks( [],[])
-            plt.yticks( [],[])
-            
-            '''
-            plt.xticks( rotation=90, fontsize=9)
-            plt.yticks( rotation=0, fontsize=9)
-            
-            text =  string.ascii_lowercase[ik+3*isim] 
-            
-            ax.text(0.,1.01,text,fontsize=18, 
-                    fontweight = 'bold', 
-                    transform = ax.transAxes)
-            
-            if isim ==0: 
-                ax.text(.5,1.15,exp[ik],
-                    fontsize=20, ha='center', 
-                    rotation = 0,
-                    fontweight = 'bold',
-                    bbox = dict(fc='lightgray', ec='none'),
-                    transform = ax.transAxes)
-        
-            if ik ==0: 
-                ax.text(-.2,.5,labs[sim],
-                    fontsize=15, ha='right', va = 'center',
-                    rotation = 90,
-                    fontweight = 'bold',
-                    bbox = dict(fc='lightgray', ec='none'),
-                    transform = ax.transAxes)  
-                
-                '''            
-                            
-                            
-                            
-                            
-    
-    for i in range(1)[:1]:
-        
-        o = K_means(x,k=4,sim=sim, ini='rand')
-     
-     
-        colors = ['pink', 'g', 'b', 'y', 'c', 'm']
-        clusters_all = o['Clustering_all']
-        
-        for i, C in enumerate( o['C_all'][:] ):
-            
-            fig = plt.figure(figsize=(4,4))
-            ax = plt.axes([.1,.1,.8,.8])
-            #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15) 
-            
-            for kk in np.unique(clusters_all[i]):
-                pp = np.array([x[j] for j in range(len(x)) if clusters_all[i][j] == kk])
-                ax.scatter(pp[:, 0], pp[:, 1], s=10, c=colors[int(kk)], alpha = .8)
-            #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15)  
-            plt.scatter(C[:,0],C[:,1],marker='*',color='r',s=100,alpha=0.9) 
-            #plt.axis('off')
-            #ax.get_xaxis().set_ticks([])
-            #ax.get_yaxis().set_ticks([])
-            #ax.xaxis.set_ticklabels([])
-            #ax.yaxis.set_ticklabels([])
-            #plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-            #plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
-            #plt.rcParams['ytick.left'] = plt.rcParams['ytick.labelleft'] = False
-            #plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = False
-            #plt.show()
-            #plt.grid(b=None)
-            #fig.savefig(odir+'%.2d'%(i+1)+'.png',dpi=150)   
-            ax.set_ylim(-.1,1.1)
-            ax.set_xlim(-.1,1.1)
-            ax.set_xlabel('X')
-            ax.set_ylabel('Y')   
+        x = np.random.normal( (.5,.5), .2, (300,2) )
+        x = np.append(x, np.random.normal((1,1), .15, (200,2) ), axis=0)
+        x = normalize1(x)
+        dx = pd.DataFrame(x)
+        input_file = odir + '/data_2d.csv'
+        dx.to_csv(input_file)       
+
    
-        clus = o['Clustering']
-        df = Silh_s(x,ss,clus)
-        fig = plt.figure(figsize=(3,3))
-        ax = plt.axes([.1,.1,.8,.8])
-    
-        Plot_SS(df, colrs=colors[:4], ax = ax)   
-        
-        
-        
-        
-    
-    for k in range(4,21)[:0]:
-        
-        o = K_means(x,k=k,sim=sim, ini='pp')
-        
-        clus = o['Clustering']
-        
-        
-        df = Silh_s(x,ss,clus)
-        
-        
-        Plot_SS(df)
-        
-        
-        
-        sis.append(df.mean().values[0])
-
-    
-
-
-    
-    if 0:
-    
-    
-        colors = ['pink', 'g', 'b', 'y', 'c', 'm']
-        clusters_all = o['Clustering_all']
-        for i, C in enumerate( o['C_all'][:] ):
+        if 1: # analyize and plot original data (S-distributions)
             
-            fig = plt.figure(figsize=(5,5))
-            ax = plt.axes([.1,.1,.8,.8])
-            #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15) 
+            if 1: # plot original data
+                
+                fig = plt.figure(figsize=(4,4))
+                ax = plt.axes([.15,.15,.8,.8])
+                    
+                ax.scatter(x[:, 0], x[:, 1], s=15, c='gray', alpha = .8)
+                ax.set_ylim(-.1,1.1)
+                ax.set_xlim(-.1,1.1)
+                ax.set_xlabel('Dim-1', fontsize=14)
+                ax.set_ylabel('Dim-2', fontsize=14)
+                xlab = np.arange(0,1.1,.2)
+                xlabs = ['%.1f' % a for a in xlab]
+                plt.yticks(xlab,xlabs, fontsize = 10)
+                plt.xticks(xlab,xlabs, fontsize = 10)
+                
+                plt.savefig(odir+'/input_data.png', dpi=100)
+                
+                
             
-            for kk in np.unique(clusters_all[i]):
-                pp = np.array([x[j] for j in range(len(x)) if clusters_all[i][j] == kk])
-                ax.scatter(pp[:, 0], pp[:, 1], s=15, c=colors[int(kk)], alpha = .8)
-            #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15)  
-            plt.scatter(C[:,0],C[:,1],marker='*',color='r',s=300,alpha=0.9) 
-            #plt.axis('off')
-            #ax.get_xaxis().set_ticks([])
-            #ax.get_yaxis().set_ticks([])
-            #ax.xaxis.set_ticklabels([])
-            #ax.yaxis.set_ticklabels([])
-            #plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-            #plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
-            #plt.rcParams['ytick.left'] = plt.rcParams['ytick.labelleft'] = False
-            #plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = False
-            #plt.show()
-            plt.grid(b=None)
-            fig.savefig(odir+'%.2d'%(i+1)+'.png',dpi=150)
+            ss = - selsim(x, sim)
+            xn = normalize1(-ss)
+            x1 = xn[np.triu_indices(xn.shape[0],k=1)]
+            
+            
+            
+            import seaborn as sns
+            
+            if 1:
+                
+                print('plot S-distribution')
+                def normalize1(x): return ( x - x.min() ) / ( x.max() - x.min())
+                
+                fig = plt.figure(figsize=[3,3])    
+                
+                ax = plt.axes([.15,.15, .8,.8])  
+                
+                
+                sns.distplot(x1, hist=False, kde=True, ax=ax,norm_hist=False,
+                     bins=np.arange(0.,1.001,0.02), color = 'k',
+                     hist_kws={'edgecolor':'none', 'alpha':.2},
+                     kde_kws={'linewidth': 2, 'alpha':.8}, label=label[sim])
+                
+                sns.distplot(x1, hist=True, kde=True, ax=ax,norm_hist=False,
+                     bins=np.arange(0.,1.001,0.015), color = color[sim],
+                     hist_kws={'edgecolor':'none', 'alpha':.1},
+                     kde_kws={'linewidth': 0, 'alpha':.5}, label='')
         
-    if 0:
-        video = odir+'video.mp4'
-        os.system('ffmpeg -r 2 -f image2 -s 1920x1080 -i '+odir+'/%02d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p '+video)
+                
+                #plt.legend(loc=2, frameon=False)
+                ax.set_ylabel('Probability distribution', fontsize=12)
+                ax.set_xlabel('Normalized similarity', fontsize=12)
+                ax.spines['right'].set_color('none')
+                ax.spines['top'].set_color('none')
+                ax.xaxis.set_ticks_position('bottom')
+                ax.spines['bottom'].set_position(('axes', -0.0))
+                ax.yaxis.set_ticks_position('left')
+                ax.spines['left'].set_position(('axes', -0.0))
+                ax.set_xlim([0, 1.01])
+                ax.xaxis.grid(False)
+                ax.yaxis.grid(False)
+                ax.ticklabel_format(style='plain')
+                #ax.ticklabel_format(useOffset=False)
+                ax.ticklabel_format(axis='y', style='sci', scilimits=(-4,4))
+                plt.xticks([0,.5,1])
+                plt.yticks([],[])
+                    
+                plt.savefig(odir+'/S-D.png', dpi=100)
+                
+            
+        
+            
+            
+            # plot matrix
+            if 1:
+                fig = plt.figure(figsize=[5,4])
+                                
+                #odir = 'fig_stat/' 
+                mask = np.zeros_like(xn)
+                mask[np.triu_indices_from(mask)] = True
+                    
+                            
+                         
+                ax = plt.axes([.1,.1, .8,.8])   
+                    
+                ax = sns.heatmap(pd.DataFrame(xn[:100,:100]),
+                                 #annot=True, 
+                                 #mask = mask,
+                                 #cmap="YlGnBu",
+                                 vmin = 0.,
+                                 vmax=1.,
+                                 cbar_kws={'label': 'Normalized similarity', "shrink": .75},
+                                 #annot_kws={'size': 6},
+                                 #fmt=".1f", center=.1, 
+                                 #cbar = cbar, 
+                                 #linewidths=.25, 
+                                 #linecolor='gray'
+                                 )       
+                
+                
+                ax.axhline(y=0, color='gray',linewidth=.25)
+                plt.xticks( [],[])
+                plt.yticks( [],[])
+                
+                plt.savefig(odir+'/S-matrix.png', dpi=100)
+                   
+        
     
-    
+                            
+        if 1: # run k -means                        
+            
+        
+            
+            o = K_means(x,k=k,sim=sim, ini='rand')
+            
+            dcluster = pd.DataFrame({'Cluster':o['Clustering']})
+            dcluster.to_csv(odir+'/cluster.csv')
+            
+         
+            colors = ['tomato', 'lightgreen', 'royalblue', 'y', 'c', 'm']
+            clusters_all = o['Clustering_all']
+            
+            for i, C in enumerate( o['C_all'][:] ):
+                
+                fig = plt.figure(figsize=(4,4))
+                ax = plt.axes([.15,.15,.8,.8])
+                #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15) 
+                
+                for kk in np.unique(clusters_all[i]):
+                    pp = np.array([x[j] for j in range(len(x)) if clusters_all[i][j] == kk])
+                    ax.scatter(pp[:, 0], pp[:, 1], s=10, c=colors[int(kk)], alpha = .8)
+                #plt.scatter(x[:,0],x[:,1],alpha=.6,color='r',s=15)  
+                plt.scatter(C[:,0],C[:,1],marker='*',color='r',s=100,alpha=0.9) 
+                ax.set_ylim(-.1,1.1)
+                ax.set_xlim(-.1,1.1)
+                ax.set_xlabel('Dim-1', fontsize=14)
+                ax.set_ylabel('Dim-2', fontsize=14)
+                xlab = np.arange(0,1.1,.2)
+                xlabs = ['%.1f' % a for a in xlab]
+                plt.yticks(xlab,xlabs, fontsize = 10)
+                plt.xticks(xlab,xlabs, fontsize = 10)
+       
+                fig.savefig(odir+'%.2d'%(i+1)+'.png',dpi=100)
+        
+        
+        
+            clus = o['Clustering']
+            
+            ss = - selsim(x, sim)
+            
+            df = Silh_s(x,ss,clus)
+            fig = plt.figure(figsize=(3,3))
+            ax = plt.axes([.15,.15,.8,.8])
+        
+        
+            Plot_SS(df, colrs=colors[:4], ax = ax)   
+            fig.savefig(odir+'/Silhouete_plot.png',dpi=100)
+            
+        
+            video = odir+'video.mp4'
+            try:
+                os.system('rm '+video)
+                os.system('ffmpeg -r 2 -f image2 -s 1920x1080 -i '+odir+'/%02d.png -vcodec libx264 -crf 25  -pix_fmt yuv420p '+video)
+            except:
+                print('fail to convert png to video')
+        
         
     
     
+    if 0: # analize uncertainty
+        import glob
+        ifiles = sorted(glob.glob(odir0+'/run_*/cluster.csv'))
+    
+        xx = pd.DataFrame({ int(f.split('run_')[-1].split('/')[0]) : pd.read_csv(f, index_col=0).values[:,0] for f in ifiles })
+        
+        xx['rnd'] = np.random.randint(k, size=len(xx) )
+        columns = xx.columns
+        do = pd.DataFrame(index=columns, columns = columns)
+        
+        from sklearn import metrics as mtr
+        
+        for c1 in columns:
+            for c2 in columns:
+                print(c1, c2)
+                d1, d2 = xx[c1].values, xx[c2].values
+                do.loc[c1, c2] = 1 - mtr.adjusted_mutual_info_score(d1, d2)
+                
+        do.to_csv(odir0+'/CUD.csv')
+        
+        
+        do1 = do.astype(float).abs()
+        mask = np.zeros_like(do1.values)
+        mask[np.triu_indices_from(mask)] = True
+                    
+                            
+        fig = plt.figure(figsize=[5,4])
+        ax = plt.axes([.15,.15,.8,.8])
+        import seaborn as sns
+                    
+  
+        ax = sns.heatmap(do1,
+                         annot=True, 
+                         mask = mask,
+                         vmin = 0.,
+                         vmax=1.,
+                         cbar_kws={'label': 'CUD', "shrink": .5},
+                         annot_kws={'size': 6},
+                         fmt=".2f", center=.1, 
+                         linewidths=.25, 
+                         linecolor='gray'
+                         )       
+                        
+        
+        ax.axhline(y=0, color='gray',linewidth=.25)
+        ax.axhline(y=do1.shape[1], color='gray',linewidth= 1)
+        ax.axvline(x=0, color='gray',linewidth=.25)
+        ax.axvline(x=do1.shape[0], color='gray',linewidth=1)
 
 
-
-
-
-
+        ax.figure.axes[-1].yaxis.label.set_size(13)
+        plt.xticks( rotation=90, fontsize=9)
+        plt.yticks( rotation=0, fontsize=9)
+        
+        fig.savefig(odir0+'/CUD.png', dpi = 150)
+                        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
 
 
 
