@@ -436,21 +436,23 @@ def Plot_SS(df, ofile='fig.png', colrs = [], ax=None  ):
 
 
 if __name__ == "__main__":
-    print("Hello")
-    
+
+
+    print('run demonstration problem')    
     odir0 = 'demo/'
     
-    
         
-    sis = []
     sim = 'ed'
+    k = 4
+    
+    
     color = {'ed': 'k'}
     label = {'ed': 'ED'}
-    k = 4
+    
     
     nu_runs = 10
     
-    for ir in range(nu_runs)[:0]:
+    for ir in range(nu_runs)[:]:
     
         odir  = odir0 + '/run_'+str(ir) + '/'
         if not os.path.exists(odir): os.makedirs(odir)
@@ -634,7 +636,8 @@ if __name__ == "__main__":
         
     
     
-    if 0: # analize uncertainty
+    if True: # analize uncertainty
+    
         import glob
         ifiles = sorted(glob.glob(odir0+'/run_*/cluster.csv'))
     

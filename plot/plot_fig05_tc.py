@@ -11,8 +11,10 @@ from scipy.ndimage.filters import minimum_filter, maximum_filter
 from netCDF4 import Dataset
 import xarray as xr
 import pandas as pd
-from kmean import *
 import glob 
+
+sys.path.append('../')
+from kmean import Plot_SS
 
 
 
@@ -41,81 +43,66 @@ def grid(ax,st):
 
 
 
-prob = {}
-if True:
-    ds = xr.open_dataset('idata/RMSC_data/TC_combined.nc')
-    
-    key = 'TC_ll'
-    iput2d = ds.TC.values
-    shape = iput2d.shape
-    dims = ds.TC.dims
-    iput1d = iput2d.reshape(shape[0],-1)
-    prob[key] = {'idata': iput1d, 
-                 'ishape': shape, 
-                 'idim': dims,
-                 'coords': ds.TC.coords}    
-    
-    
 
 
-labs =  { 'ssim':'S-SIM', 'str':'COR', 'ed':'ED','md':'MD', 'rand':'Random'}
 labs =  { 'ssim':'S k-means', 'str':'C k-means', 'ed':'E k-means','md':'M k-means', 'rand':'Random'}
 
 
 #===========================================
 key = 'TC_ll'
     
-for nr in range(10):
-    ini = 'rand'
-    print(key)
-    
-    odir0 = 'output_20220201/'+key+'/' 
-    
-    di = xr.open_dataset('input_pp/'+key+'.nc' )
-    
-    
+
+# plot demonstrations
+
+if 1:
+    di = xr.open_dataset('../input_pp/'+key+'.nc' )
     xx = di.idata.values
     shape = di.attrs['ishape']
     dims = di.attrs['idim']
     coords = di.coords
     
     
-    # plot demonstration
-    if 0:
-        # plot TC all
-        proj =  ccrs.PlateCarree() #ccrs.Robinson(central_longitude=145)
-                
-        fig = plt.figure(figsize=(10, 5))
-        ax = plt.axes(projection= proj )
-        ax.set_extent([110,180,5, 60])    
-        
-        land_10m = cartopy.feature.NaturalEarthFeature('physical', 'land', '10m')
-        ax.add_feature(land_10m, zorder=0, edgecolor='black', facecolor='gray',alpha=.4, lw=0.3)
-        ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.5,lw=.5)
-        ax.outline_patch.set_linewidth(.1)
-        
-        #y1 = xx[175:190,::2].mean(axis=0)
-        #x1 = xx[175:190,1::2].mean(axis=0)
+    # plot TC all
+    proj =  ccrs.PlateCarree() #ccrs.Robinson(central_longitude=145)
+            
+    fig = plt.figure(figsize=(10, 5))
+    ax = plt.axes(projection= proj )
+    ax.set_extent([110,180,5, 60])    
+    
+    land_10m = cartopy.feature.NaturalEarthFeature('physical', 'land', '10m')
+    ax.add_feature(land_10m, zorder=0, edgecolor='black', facecolor='gray',alpha=.4, lw=0.3)
+    ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.5,lw=.5)
+    ax.outline_patch.set_linewidth(.1)
+    
+    #y1 = xx[175:190,::2].mean(axis=0)
+    #x1 = xx[175:190,1::2].mean(axis=0)
 
-        #ax.plot(x1,y1, lw=2, c='k') 
-        
-        
-        for xy in xx[:]:
-            #print(xy)
-            y = xy[::2]
-            x = xy[1::2]
-            ax.plot(x,y, lw=.5, c='red', alpha = .3) #row.latitude,color='r',transform=ccrs.Geodetic(),s=10)  
-            #ax.scatter(x[0],y[0], c='g', s = 5)
+    #ax.plot(x1,y1, lw=2, c='k') 
     
-    
-        #from functions import grid
-        #grid(ax,10)
-    
+    color = 'royalblue'
+    for xy in xx[:]:
+        #print(xy)
+        y = xy[::2]
+        x = xy[1::2]
+        ax.plot(x,y, lw=.5, c=color, alpha = .3) #row.latitude,color='r',transform=ccrs.Geodetic(),s=10)  
+        #ax.scatter(x[0],y[0], c='g', s = 5)
+
+
+
+
+
+
+
+
+
+for nr in range(10)[:1]:
+    ini = 'rand'
+    print(key)
     
     
     for size in range(4,21)[:1]:
         
-        idir0 = 'output_20220318/'+key+'/'+  '%.2d'%nr +'/'
+        idir0 = '../output_20220318/'+key+'/'+  '%.2d'%nr +'/'
         fa = 1
         if fa: 
             fig = plt.figure(figsize=(11, 8))
@@ -138,7 +125,6 @@ for nr in range(10):
             
             do = xr.open_dataset(ifile)
             
-            x = prob[key]['idata']
             
             col = ['indianred', 'goldenrod', 'darkseagreen', 'steelblue']
             #.sort_values('country_region_code')

@@ -66,12 +66,12 @@ for nt in range(10)[:1]:
                 do.close()  
                     
                 
-            for size in range(2,21)[:0]:
+            for size in range(2,21)[::2]:
                             
                 
                 n = size
                 
-                for ini in ['rand', 'pp']:
+                for ini in ['rand', 'pp'][:1]:
                     
                     odir = odir0 +'/n'+'%.2d' % n +'/'  + ini + '/'          
                     ofile = odir + sim+'.nc' 

@@ -5,10 +5,6 @@ Created on Thu Mar 17 16:19:11 2022
 
 @author: doan
 """
-"""
-plot H's and L's on a sea-level pressure map
-(uses scipy.ndimage.filters and netcdf4-python)
-"""
 import sys, os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,6 +19,8 @@ from sklearn.linear_model import LinearRegression
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.ticker as mticker
 import pandas as pd
+
+sys.path.append('../')
 from kmean import Plot_SS
 import glob
 import sklearn
@@ -234,14 +232,12 @@ if 1:
     
 
 
-
-
     # plot combine 1 ...
     for ini in inis[:0]:
         for size in sizes[2:3]:
             
             
-            for sc in ['ARS', 'AMI', 'VMS', 'FMS'][:]:   
+            for sc in ['ARS', 'AMI', 'VMS', 'FMS'][1:2]:   
                 
                 
                 if 0:
@@ -252,7 +248,7 @@ if 1:
                     
                         fig = plt.figure(figsize=[10,3.5])
                         exp = ['WP', 'CC', 'TC']    
-                        for ik, key in enumerate(kk[:]):
+                        for ik, key in enumerate(kk[:1]):
                             
                             #sns.set_theme()
                             d11 = d1.loc[ (ini, key, sc, size, ir) ]
@@ -304,7 +300,7 @@ if 1:
                     
                     odir = 'fig_stat/' 
                     if not os.path.exists(odir): os.makedirs(odir)
-                    for sim in sims[:]:
+                    for sim in sims[:1]:
                         
                         fig = plt.figure(figsize=[10,3.5])
                         exp = ['WP', 'CC', 'TC']                            
@@ -361,10 +357,6 @@ if 1:
                         print(ofile)
                         fig.savefig(ofile, dpi = 150)
 
-
-
-    
-    
 
 
     # plot combine 2 ...
@@ -431,11 +423,19 @@ if 1:
                 fig.savefig(ofile, dpi = 150)
                         
                         
+                    
                         
-
+             
+                    
+             
+                
+             
+    #========
+    #========
+            
     # plot combine 2 with chord (figure 8)
     
-    for ini in inis[:0]:
+    for ini in inis[:]:
         for size in sizes[::2]:
             
             for ir in nrun[:]:
@@ -534,7 +534,6 @@ if 1:
                         
                         
                 ofile = odir+ sc + '_k%.2d'%size +'r%.2d'%ir+  ini + '.png'
-                        
                 #ofile = odir + ini+'_compare_2sc_ims_k%.2d'%size+  'r%.2d'%ir + '.png'
                 print(ofile)
                 fig.savefig(ofile, dpi = 150)
@@ -546,7 +545,7 @@ if 1:
                         
                         
     # plot combine 2 ...(figure 9)
-    for ini in inis[:0]:
+    for ini in inis[:]:
         
         for size in sizes[::2]:  
 
@@ -736,7 +735,7 @@ if 1:
                     plt.legend(frameon=False, ncol=2, fontsize=8)
                     xlabel = 'n-clusters'
                     
-                    ax.set_ylabel( 'CUD ('+ sc+')', fontsize=15 )
+                    ax.set_ylabel( 'CUD (-)', fontsize=15 )
                     ax.set_xlabel( xlabel, fontsize=13 )
                     #ax.text(0.,1.02,string.ascii_lowercase[ik]+') '+k,fontsize=18, fontweight = 'bold', transform = ax.transAxes)
                             

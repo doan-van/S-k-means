@@ -16,6 +16,7 @@ from sklearn.linear_model import LinearRegression
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.ticker as mticker
 import pandas as pd
+sys.path.append('../')
 from kmean import Plot_SS
 
 
@@ -36,92 +37,104 @@ def grid(ax,st):
 
 
     
-labs =  { 'ssim':'S-SIM', 'str':'COR', 'ed':'ED','md':'MD', 'rand':'Random'}
 labs =  { 'ssim':'S k-means', 'str':'C k-means', 'ed':'E k-means','md':'M k-means', 'rand':'Random'}
 
-#am = pd.read_csv('/Users/doan/working/00_OBS_studies/AMEDAS/daily/Amedas_list.csv', index_col=0).set_index('station_id')
-am = pd.read_csv('../../../amedas-down/Amedas_list.csv', index_col=0).set_index('station_id')
+#am = pd.read_csv('../../../../amedas-down/Amedas_list.csv', index_col=0).set_index('station_id')
+am = pd.read_csv('Amedas_list.csv', index_col=0).set_index('station_id')
 
 #===========================================
 key = 'AM_t_1950_y'
 ini = 'rand'
 
-for nr in range(10)[:]:
+
+di = xr.open_dataset('../input_pp/'+key+'.nc' )
+x = di.idata.values
+shape = di.attrs['ishape']
+dims = di.attrs['idim']
+coords = di.coords
+yy = di.year.values
+
+idata = di.idata
+
+
+if 1:
+    
+    axx = [ [.1,.22,.8,.25], [.2,0.4,.6,.4]]    
+    dotcol, lincol = 'r', 'lightblue'
+
+
+    axx = [ [.1,.22,.8,.25], [.2,0.4,.6,.4]]    
+    dotcol, lincol = 'tomato', 'gray'
+
+    ame  = am.loc[di.sts] 
+    proj =  ccrs.PlateCarree() #ccrs.Robinson(central_longitude=145)
+    
+    fig = plt.figure(figsize=(4, 6))
+    #ax = plt.axes([.03,0.05,.7,.9], projection= proj )    
+    #fig = plt.figure(figsize=(4, 4))
+
+
+    ax = plt.axes( axx[0] ) 
+    
+    for ic, c in enumerate(idata):
+        ax.plot(yy,c, color=lincol, lw=1, alpha=1)
+        #x1 = x[np.argwhere(clus == ic )[:,0]]
+        #ax.fill_between(yy, x1.max(axis=0), x1.min(axis=0), alpha=.1, color=col[ic])
+        #for x2 in x1:
+        #    ax.plot(x2, color=col[ic], alpha=.1)
+    ax.set_ylabel('$\mathrm{\Delta T\ (^oC)}$')
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    
+    # was: axes.spines['bottom'].set_position(('data',1.1*X.min()))
+    ax.spines['bottom'].set_position(('axes', -0.02))
+    ax.yaxis.set_ticks_position('left')
+    ax.spines['left'].set_position(('axes', -0.02))
+    ax.hlines(0, 1950, 2020, lw = 1, ls = '--', zorder=100)
+    ax.set_xlim([1950, 2020 ])
+    ax.set_ylim([-2,3])
+    ax.xaxis.grid(False)
+    ax.yaxis.grid(False)
+    #==================        
+    
+    
+    #==================
+    ax = plt.axes(axx[1], projection= proj )
+    ax.set_extent([128,148,29,46])
+    ax.coastlines(resolution='10m',lw=.1, color='gray')
+    #ax.gridlines()
+    #ax.stock_img()
+    ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.5,lw=.5)
+    land_10m = cartopy.feature.NaturalEarthFeature('physical', 'land', '10m')
+    
+    ax.add_feature(land_10m, zorder=0, edgecolor='gray', 
+                   lw=.5,
+                   facecolor='none',alpha=.75)
+    
+    ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.2,lw=.0)
+    ax.outline_patch.set_linewidth(.0)            
+
+    for j, (i, row) in enumerate(ame.iterrows()) :
+        ax.scatter(row.longitude,row.latitude,color=dotcol,
+                   edgecolor='k',lw=.1,
+                   #transform=ccrs.Geodetic(),
+                   s=10)   
+            
+            
+            
+        
+        
+        
+        
+        
+            
+
+
+
+for nr in range(10)[:0]:
     
     idir0 = '../output_20220318/'+key+'/'+  '%.2d'%nr +'/'
-    
-    di = xr.open_dataset('input_pp/'+key+'.nc' )
-    x = di.idata.values
-    shape = di.attrs['ishape']
-    dims = di.attrs['idim']
-    coords = di.coords
-    yy = di.year.values
-    
-    idata = di.idata
-    
-    
-    if 0:
-        
-        ame  = am.loc[di.sts] 
-        
-        
-        proj =  ccrs.PlateCarree() #ccrs.Robinson(central_longitude=145)
-        
-        fig = plt.figure(figsize=(4, 6))
-        #ax = plt.axes([.03,0.05,.7,.9], projection= proj )    
-        #fig = plt.figure(figsize=(4, 4))
-
-    
-        ax = plt.axes( [.1,.22,.8,.25] ) 
-        
-        for ic, c in enumerate(idata):
-            ax.plot(yy,c, color='lightblue', lw=1, alpha=1)
-            #x1 = x[np.argwhere(clus == ic )[:,0]]
-            #ax.fill_between(yy, x1.max(axis=0), x1.min(axis=0), alpha=.1, color=col[ic])
-            #for x2 in x1:
-            #    ax.plot(x2, color=col[ic], alpha=.1)
-        ax.set_ylabel('$\mathrm{\Delta T\ (^oC)}$')
-        ax.spines['right'].set_color('none')
-        ax.spines['top'].set_color('none')
-        ax.xaxis.set_ticks_position('bottom')
-        
-        # was: axes.spines['bottom'].set_position(('data',1.1*X.min()))
-        ax.spines['bottom'].set_position(('axes', -0.02))
-        ax.yaxis.set_ticks_position('left')
-        ax.spines['left'].set_position(('axes', -0.02))
-        ax.hlines(0, 1950, 2020, lw = 1, ls = '--', zorder=100)
-        ax.set_xlim([1950, 2020 ])
-        ax.set_ylim([-2,3])
-        ax.xaxis.grid(False)
-        ax.yaxis.grid(False)
-                
-        
-        
-        
-        
-        ax = plt.axes([.2,0.4,.6,.4], projection= proj )
-            
-        ax.set_extent([128,148,29,46])
-        ax.coastlines(resolution='10m',lw=.1, color='gray')
-        #ax.gridlines()
-        #ax.stock_img()
-        ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.5,lw=.5)
-        land_10m = cartopy.feature.NaturalEarthFeature('physical', 'land', '10m')
-        
-        ax.add_feature(land_10m, zorder=0, edgecolor='gray', 
-                       lw=.5,
-                       facecolor='none',alpha=.75)
-        
-        ax.add_feature(cartopy.feature.BORDERS, linestyle='-', alpha=.2,lw=.0)
-        ax.outline_patch.set_linewidth(.0)            
-    
-        for j, (i, row) in enumerate(ame.iterrows()) :
-            ax.scatter(row.longitude,row.latitude,color='r',
-                       edgecolor='k',lw=.1,
-                       #transform=ccrs.Geodetic(),
-                       s=10)            
-        
-        
     
     for size in range(4,21)[:1]:
         

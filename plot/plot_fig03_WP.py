@@ -17,6 +17,8 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.ticker as mticker
+
+sys.path.append('../')
 from kmean import *
 import os
 
@@ -82,57 +84,13 @@ labs =  { 'ssim':'S k-means', 'str':'C k-means', 'ed':'E k-means','md':'M k-mean
 
 
 if __name__ == '__main__':
+
     
-    
-    if False:
-        var = 'PMSL'
-        ifile = 'idata/PMSL_all_regr.nc'
-    
-    
-        d0 = xr.open_dataset(ifile)[var] / 100.
-        d1 = d0.loc['2005':'2010'] 
-        d1.lon2d.values[d1.lon2d.values < 0] = d1.lon2d.values[d1.lon2d.values < 0] + 360
-        #d1 = d1.isel(lat=slice(0,65),lon=slice(19,91)) 
-        d1 = d1.isel(lat=slice(0,35),lon=slice(10,45)) 
-        lats, lons = d1['lat2d'].values,d1['lon2d'].values 
-    
-    
-        prmsl = d1[0].values
         
-        
-        #==============================
-        # create Basemap instance.
-        fig=plt.figure(figsize=(8,4.5))
-        ax = fig.add_axes([0.05,0.05,0.9,0.85])
-        
-        m =Basemap(llcrnrlon=lons.min(),llcrnrlat=lats.min(),urcrnrlon=lons.max(),urcrnrlat=lats.max(),projection='mill')
-        
-        # contour levels
-        clevs = np.arange(900,1100.,4.)
-        x, y = m(lons, lats)
-        cs = m.contour(x,y,prmsl,clevs,colors='k',linewidths=1.)
-        
-        m.drawcoastlines(linewidth=1.25)
-        m.fillcontinents(color='0.8')
-        m.drawparallels(np.arange(-80,81,20),labels=[1,1,0,0])
-        m.drawmeridians(np.arange(0,360,10),labels=[0,0,0,1])
-        
-        plt.title('Mean Sea-Level Pressure (with Highs and Lows)' )
-    
-    
-    
-        plot_lows_highs(ax,m,x, y, prmsl)
-        
-        
-        plt.show()
-        
-        
-        
-        
-        
+    # plot demonstration
     if 0:
         var = 'PMSL'
-        ifile = 'idata/PMSL_all_regr.nc'
+        ifile = '../idata/PMSL_all_regr.nc'
     
     
         d0 = xr.open_dataset(ifile)[var] / 100.
@@ -229,7 +187,7 @@ if __name__ == '__main__':
                                         
         
         
-            odir = 'fig_wp/'
+            odir = 'fig/fig_wp/'
             ofile = odir + '%.3d'%i+'.png'
             plt.savefig(ofile, dpi=100)
             plt.close()
@@ -238,10 +196,8 @@ if __name__ == '__main__':
         
         
         
-        
-        
 
-    for nr in range(10):
+    for nr in range(10)[:1]:
         
         key = 'SLP_DJF'
         ini = 'rand'
@@ -266,10 +222,9 @@ if __name__ == '__main__':
             idir = idir0 +'/n'+'%.2d' % size +'/' + ini + '/'         
             ifile = idir + sim+'.nc' 
             
-                    
 
             ofile = odir +'/k-'+'%.2d' % size +'_'+sim+ '_' +ini+  '.png'    
-            
+        
             
             col = ['indianred', 'goldenrod', 'darkseagreen', 'steelblue']
             
@@ -377,73 +332,6 @@ if __name__ == '__main__':
                             xyplotted.append((x,y))
                                 
     
-                if 0:
-                    ax = fig.add_axes([0.05,0.05,0.9,0.85])
-                    
-                    m =Basemap(llcrnrlon=lons.min(),
-                               llcrnrlat=lats.min(),
-                               urcrnrlon=lons.max(),
-                               urcrnrlat=lats.max(),projection='mill')
-                    
-                    # contour levels
-                    clevs = np.arange(900,1100.,4.)
-                    x, y = m(lons, lats)
-                    cs = m.contour(x,y,z,clevs,colors='k',linewidths=1.)
-    
-                    clevs = np.arange(902,1100.,4.)
-                    cs = m.contour(x,y,z,clevs,colors='gray', ls= '--',linewidths=1.)
-    
-                    
-                    m.drawcoastlines(linewidth=1.25)
-                    m.fillcontinents(color='0.8')
-                    m.drawparallels(np.arange(-80,81,10),labels=[1,1,0,0])
-                    m.drawmeridians(np.arange(0,360,10),labels=[0,0,0,1])
-                    
-                    plt.title('Mean Sea-Level Pressure (with Highs and Lows)' )
-                
-                
-                
-                    #plot_lows_highs(ax,m,x, y, z.values)
-    
-                    #def plot_lows_highs(ax,m,x, y,prmsl):
-                    prmsl = z.values
-                    # the window parameter controls the number of highs and lows detected.
-                    # (higher value, fewer highs and lows)
-                    local_min, local_max = extrema(prmsl, mode='wrap', window=50)
-                
-                
-                    xlows = x[local_min]; xhighs = x[local_max]
-                    ylows = y[local_min]; yhighs = y[local_max]
-                    lowvals = prmsl[local_min]; highvals = prmsl[local_max]
-                    
-                    # plot lows as blue L's, with min pressure value underneath.
-                    xyplotted = []
-                    # don't plot if there is already a L or H within dmin meters.
-                    yoffset = 0.022*(m.ymax-m.ymin)
-                    dmin = yoffset
-                    
-                    for x,y,p in zip(xlows, ylows, lowvals):
-                        if x < m.xmax and x > m.xmin and y < m.ymax and y > m.ymin:
-                            dist = [np.sqrt((x-x0)**2+(y-y0)**2) for x0,y0 in xyplotted]
-                            if not dist or min(dist) > dmin:
-                                ax.text(x,y,'L',fontsize=14,fontweight='bold',
-                                        ha='center',va='center',color='r')
-                                ax.text(x,y-yoffset,repr(int(p)),fontsize=9,
-                                        ha='center',va='top',color='r',
-                                        bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
-                                xyplotted.append((x,y))
-                    # plot highs as red H's, with max pressure value underneath.
-                    xyplotted = []
-                    for x,y,p in zip(xhighs, yhighs, highvals):
-                        if x < m.xmax and x > m.xmin and y < m.ymax and y > m.ymin:
-                            dist = [np.sqrt((x-x0)**2+(y-y0)**2) for x0,y0 in xyplotted]
-                            if not dist or min(dist) > dmin:
-                                ax.text(x,y,'H',fontsize=14,fontweight='bold',
-                                        ha='center',va='center',color='b')
-                                ax.text(x,y-yoffset,repr(int(p)),fontsize=9,
-                                        ha='center',va='top',color='b',
-                                        bbox = dict(boxstyle="square",ec='None',fc=(1,1,1,0.5)))
-                                xyplotted.append((x,y))
     
             #df = pd.read_csv(odir+sim+'_S-anal.csv', index_col=0)
             #fig = Plot_SS(df, colrs=col)
@@ -461,7 +349,8 @@ if __name__ == '__main__':
             if not os.path.exists(odir): os.makedirs(odir)    
             
             ofile_a = odir + key + '%.2d'%nr  +'k%.2d' % size +'_' +ini+  '.png'    
-            fig.savefig(ofile_a, dpi = 150)    
+            fig.savefig(ofile_a, dpi = 150)   
+            #plt.close()
 
 
 
