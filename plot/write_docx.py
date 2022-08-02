@@ -14,8 +14,7 @@ document = Document()
 run = document.add_heading('Supplementary Material', level=0)
 
 s = (
-'This file include figures, that provide the same information as '
-'those in the main text but for different run (i.e., initialization) or k setting.'
+'This file includes figures, that provide the same information as those in the main text but for different runs (i.e., initializations).'
 )
 
 
@@ -28,7 +27,7 @@ p.add_run('italic.').italic = True
 '''
 
 
-run = document.add_heading( level=1).add_run('Results for demonstration tests WP')
+run = document.add_heading( level=1).add_run('Results for the WP test')
 font = run.font
 font.color.rgb = RGBColor(0x0, 0x0, 0)
 #document.add_paragraph('Intense quote', style='Intense Quote')
@@ -45,6 +44,7 @@ document.add_paragraph(
 #=== add figure 3
 
 
+ia = 1
 rr = range(1, 10)[:]
 for ir in rr:
     print(ir)
@@ -52,26 +52,27 @@ for ir in rr:
     document.add_picture(ifile, width=Inches(6))
     
 
-    s = ('Fig. 3-' +str(ir)+ ' Similar with Figure 3 in the maintext but for run ' +str(ir)+'. '
-         'Winter SLP pattern revealed by S, C, E, and M k-means with k = 4 only. '
-     '"H" indicates the location of the high and “L” for the low. '
-     'General silhouette analysis results are shown below maps'
+    s = ('Fig. S' +str(ia)+ \
+         ' Similar with Figure 3 in the main manuscript but for the results from run ' +str(ir)+'. '
+         'The winter SLP pattern revealed by S, C, E, and M k-means with k = 4. '
+     '"H" indicates the location of the high and “L” indicates the location of the low. '
+     'General silhouette analysis results are shown below the maps'
      ' where x-axis indicate the score, and y-axis the label of '
-     'cluster numbered 1 – 4. Input data are SLP from ERA-Interim, '
-     'which were re-gridded to Cartesian coordinates with resolution '
+     'cluster numbered 1 – 4. Input data are ERA-Interim SLP data, '
+     'which were re-gridded to Cartesian coordinates with a resolution '
      'of 200 x 200 km and grid size of 35 x 35. Daily data for December, '
-     'January, and February for ten year 2005 – 2014 are used.'
+     'January, and February over ten year 2005 – 2014 were used.'
     )
     
     run = document.add_paragraph( style='Caption').add_run(s)
     
     font = run.font
     font.color.rgb = RGBColor(0x0, 0x0, 0)
-
+    ia = ia + 1
     
     
 
-run = document.add_heading( level=1).add_run('Results for demonstration tests CC')
+run = document.add_heading( level=1).add_run('Results for the CC test')
 font = run.font
 font.color.rgb = RGBColor(0x0, 0x0, 0)
 
@@ -83,18 +84,19 @@ for ir in rr:
     ifile = 'fig/fig04/AM_t_1950_y_k04r'+ '%.2d'%ir +'_rand.png'
     document.add_picture(ifile, width=Inches(6))
 
-    s = ('Fig. 4-' +str(ir)+ ' Similar with Figure 4 in the maintext but for run ' +str(ir)+'. '
-    'Result for CC experiment for cluster the climate change (temperature increase) time series over 134 weather stations over whole Japan. Pattern revealed by S, C, E, and M k-means with k = 4. Input data are annual mean for 70 years from 1951 – 2020 (subtracted by the mean of the first 30 years) observed temperature achieved at in-situ weather stations (dots in map) run by JMA. Time series of centroids and input vectors are shown in below panels together with general silhouette analysis results where x-axis indicate the score (S-score), and y-axis the label of cluster numbered 1 – 4. '
+    s = ('Fig. S' +str(ia)+ 
+         ' Similar with Figure 4 in the main manuscript but for the results from run ' +str(ir)+'. '
+    'Result for CC experiment for cluster the climate change (temperature increase) time series over 134 weather stations over the entirety of Japan. Pattern were revealed by S, C, E, and M k-means with k = 4. Input data correspond to annual mean data collected over 70 years from 1951 – 2020 (subtracted by the mean of the first 30 years) and observed temperature achieved at in situ weather stations (dots in map) operated by the JMA. Time series of centroids and input vectors are shown in below panels together with general silhouette analysis results, where the x-axis indicates the score (S-score) and the y-axis presents the labels of clusters numbered 1 – 4. '
     )
 
     run = document.add_paragraph( style='Caption').add_run(s)
     
     font = run.font
     font.color.rgb = RGBColor(0x0, 0x0, 0)
+    ia = ia + 1
 
 
-
-run = document.add_heading( level=1).add_run('Results for demonstration tests TC')
+run = document.add_heading( level=1).add_run('Results for the TC test')
 font = run.font
 font.color.rgb = RGBColor(0x0, 0x0, 0)
 
@@ -107,8 +109,8 @@ for ir in rr:
     document.add_picture(ifile, width=Inches(6))
     
 
-    s = ('Fig. 5-' +str(ir)+ ' Similar with Figure 5 in the maintext but for run ' +str(ir)+'. '
-    'Result for TC experiment to cluster tropical cyclone paths. Pattern revealed by S, C, E, and M k-means with k = 4. Input data are best track of TC achieved from JMA from 1951 – 2020. Only TCs which passing the dashed box in the map are used to feed k-means.  Thus total of 863 TC tracking data are used. The left side of each panel show general silhouette analysis results where x-axis indicate the score (S-score), and y-axis the label of cluster numbered 1 – 4. The path of centroid TC path illustrated by bold line and colored with the same color in silhouette diagram.'
+    s = ('Fig. S' +str(ia)+ ' Similar with Figure 5 in the maintext but for run ' +str(ir)+'. '
+    'Results of the TC experiment for clustering tropical cyclone paths. The pattern was revealed by S, C, E, and M k-means, with k = 4. Input data are the best TC tracks obtained by the JMA from 1951 – 2020. Only TCs that passed the dashed box in the map are used to feed the k-means. Thus, a total of 863 TC tracking data points are used. The left side of each panel show the general silhouette analysis results, where the x-axis indicates the score (S-score) and y-axis presents the labels of clusters numbered 1 – 4. The centroid TC path is illustrated by the bold line, and the color is consistent with that in the silhouette diagram.'
     )
     
     
@@ -116,7 +118,7 @@ for ir in rr:
     font = run.font
     font.color.rgb = RGBColor(0x0, 0x0, 0)
     
-
+    ia = ia + 1
 
 
 
@@ -149,10 +151,11 @@ document.add_page_break()
 '''
 
 
-
-document.save('fig/SupplementaryInfo.docx')
+odir = '../../../../../00\ Works/00\ Studies/00\ Papers-Lead-author/13\ kmeans/'
+ofile = odir+'/SupplementaryInfo.docx'
+document.save()
 import os
-os.system('soffice --convert-to pdf fig/SupplementaryInfo.docx')
+os.system('cd '+odir+'; soffice --convert-to pdf SupplementaryInfo.docx')
 
 
 

@@ -47,7 +47,7 @@ key = 'AM_t_1950_y'
 ini = 'rand'
 
 
-di = xr.open_dataset('../input_pp/'+key+'.nc' )
+di = xr.open_dataset('../input_data/'+key+'.nc' )
 x = di.idata.values
 shape = di.attrs['ishape']
 dims = di.attrs['idim']

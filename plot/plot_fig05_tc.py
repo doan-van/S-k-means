@@ -55,7 +55,7 @@ key = 'TC_ll'
 # plot demonstrations
 
 if 1:
-    di = xr.open_dataset('../input_pp/'+key+'.nc' )
+    di = xr.open_dataset('../input_data/'+key+'.nc' )
     xx = di.idata.values
     shape = di.attrs['ishape']
     dims = di.attrs['idim']

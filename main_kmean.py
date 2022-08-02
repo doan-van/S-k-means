@@ -22,7 +22,7 @@ from datetime import datetime
 
 
 outdir = 'output_20220318'
-
+sys.exit()
 import time
 times = []
 
@@ -40,7 +40,7 @@ for nt in range(10)[:1]:
         odir0 = outdir + '/' + key + '/' + '%.2d' % (nt) +'/'
         if not os.path.exists(odir0): os.makedirs(odir0) 
         
-        di = xr.open_dataset('input_pp/'+key+'.nc' )
+        di = xr.open_dataset('input_data/'+key+'.nc' )
         
         x = di.idata.values
         shape = di.attrs['ishape'] 
